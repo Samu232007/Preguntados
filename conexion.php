@@ -1,5 +1,5 @@
 <?php
-$host = 'localhost';
+$host = 'preguntados-db.cwpm8282m1nc.us-east-1.rds.amazonaws.com';
 $db   = 'preguntados_db';
 $user = 'admin';
 $pass = 'SamuMoraChaves23';
