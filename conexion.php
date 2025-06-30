@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
 $db   = 'preguntados_db';
-$user = 'root';
-$pass = 'admin';
+$user = 'admin';
+$pass = 'SamuMoraChaves23';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
