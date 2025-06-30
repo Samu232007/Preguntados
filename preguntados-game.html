@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados - Trivia Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Elementos decorativos del fondo -->
+    <div class="background-elements">
+        <div class="wave"></div>
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="sun"></div>
+    </div>
+
+    <!-- Pantalla principal -->
+    <div id="menu-principal" class="screen active">
+        <div class="game-container">
+            <header class="header">
+                <div class="logo">🎯 Preguntados</div>
+                
+                <div class="user-profile" style="display: none" id="userDropdown">
+                    <div class="user-dropdown">
+                        <span class="username" id="usernameDisplay"></span>
+                        <i class="arrow-down">▼</i>
+                    </div>
+                    <div class="dropdown-content" id="userMenu">
+                        <div class="user-info">
+                            <p id="userFullName"></p>
+                            <p id="userEmail"></p>
+                            <p id="userNationality"></p>
+                        </div>
+                        <button onclick="cerrarSesion()" class="logout-btn">Cerrar sesión</button>
+                    </div>
+                </div>
+                <button class="login-btn" onclick="irALogin()">Iniciar Sesión</button>
+            </header>
+
+            <main class="main-content">
+                <h1 class="title">¡Bienvenido al Trivia!</h1>
+                
+                <div class="game-modes">
+                    <button class="mode-btn trivia" onclick="cambiarPantalla('pantalla-mensaje-trivia')">
+                        🎲 Modo Trivia
+                    </button>
+                    <button class="mode-btn redes" onclick="cambiarPantalla('pantalla-mensaje-redes')">
+                        💻 Trivia Redes
+                    </button>
+                    <button class="mode-btn desafio" onclick="cambiarPantalla('pantalla-mensaje-desafío')">
+                        ⚡ Modo Desafío
+                    </button>
+                </div>
+            </main>
+            
+        </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de ruleta -->
+    <div id="pantalla-ruleta" class="screen">
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="volverMenu()">← Volver</button>
+        </div>
+        
+        <div class="ruleta-container">
+            <h2 style="color: white; font-size: 2rem; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                ¡Gira la Ruleta!
+            </h2>
+            
+            <div class="ruleta-wrapper">
+                <div class="ruleta-pointer"></div>
+                <div class="ruleta" id="ruleta" onclick="girarRuleta()">
+                    <!-- Los sectores se generarán dinámicamente -->
+                </div>
+            </div>
+            
+            <button class="girar-btn" id="girar-btn" onclick="girarRuleta()">
+                GIRAR
+            </button>
+            
+            <div id="insignias" style="margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; text-shadow: 3px 3px 6px rgba(0,0,0,0.4);">
+                <!-- Las insignias se mostrarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de categoría seleccionada -->
+    <div id="pantalla-categoria" class="screen">
+        
+        <div class="categoria-seleccionada">
+            <div class="categoria-card">
+                <div class="categoria-icon" id="categoria-icon-selected"></div>
+                <div class="categoria-nombre" id="categoria-nombre-selected"></div>
+                <div class="categoria-descripcion">¡Responde correctamente 3 preguntas para obtener la insignia!</div>
+                <button class="continuar-btn" onclick="empezarPreguntas()">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de mensaje desafío -->
+    <div id="pantalla-mensaje-desafío" class="screen">
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="volverMenuD()">← Volver</button>
+        </div>
+        <div class="categoria-seleccionada">
+            <div class="categoria-card">
+                <div class="categoria-nombre">⚡Modo Desafío</div>
+                <div class="categoria-descripcion">¡Responde preguntas hasta fallar para aumentar tu record!</div>
+                <button class="continuar-btn" onclick="iniciarJuego('desafio')">Empezar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de mensaje trivia -->
+    <div id="pantalla-mensaje-trivia" class="screen">
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="volverMenuD()">← Volver</button>
+        </div>
+        <div class="categoria-seleccionada">
+            <div class="categoria-card">
+                <div class="categoria-nombre">🎲Modo Trivia</div>
+                <div class="categoria-descripcion">Responde 3 preguntas correctas por categoría para ganar una insignia. ¡Consigue todas y gana el juego!</div>
+                <button class="continuar-btn" onclick=" iniciarJuego('trivia')">Empezar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de mensaje trivia -->
+    <div id="pantalla-mensaje-redes" class="screen">
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="volverMenuD()">← Volver</button>
+        </div>
+        <div class="categoria-seleccionada">
+            <div class="categoria-card">
+                <div class="categoria-nombre">💻Trivia Redes</div>
+                <div class="categoria-descripcion">Responde 3 preguntas correctas por rama de informática para ganar una insignia. ¡Consigue todas y gana el juego!</div>
+                <button class="continuar-btn" onclick="iniciarJuego('redes')">Empezar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de pregunta -->
+    <div id="pantalla-pregunta" class="screen">
+        
+        <div class="pregunta-container">
+            <div class="timer" id="timer">20</div>
+            <div class="categoria-actual" id="categoria-actual"></div>
+            <div class="loading" id="loading-pregunta" style="display:none;"></div>
+            <div class="pregunta-texto" id="pregunta-texto"></div>
+            <div class="opciones">
+                <button class="opcion-btn" id="opcion-a" onclick="responder('a')" style="display: none;"></button>
+                <button class="opcion-btn" id="opcion-b" onclick="responder('b')" style="display: none;"></button>
+                <button class="opcion-btn" id="opcion-c" onclick="responder('c')" style="display: none;"></button>
+                <button class="opcion-btn" id="opcion-d" onclick="responder('d')" style="display: none;"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de pregunta desafío-->
+    <div id="pantalla-pregunta-desafío" class="screen">
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="volverMenu()">← Volver</button>
+        </div>
+        <div class="pregunta-container">
+            <div id="racha-desafio" class="racha-desafio-fuego">
+                <span class="fuego-emoji">🔥</span>
+                <span class="racha-numero" id="racha-numero-desafio">0</span>
+                
+            </div>
+            <div class="timer" id="timer-desafio">20</div>
+            <div class="categoria-actual" id="categoria-actual-desafio"></div>
+            <div class="loading" id="loading-pregunta-desafio" style="display:none;"></div>
+            <div class="pregunta-texto" id="pregunta-texto-desafio"></div>
+            <div class="opciones">
+                <button class="opcion-btn" id="opcion-a-desafio" onclick="responderDesafio('a')" style="display: none;"></button>
+                <button class="opcion-btn" id="opcion-b-desafio" onclick="responderDesafio('b')" style="display: none;"></button>
+                <button class="opcion-btn" id="opcion-c-desafio" onclick="responderDesafio('c')" style="display: none;"></button>
+                <button class="opcion-btn" id="opcion-d-desafio" onclick="responderDesafio('d')" style="display: none;"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-estadisticas-desafio" class="screen">
+    <div class="estadisticas-desafio-container">
+        <h2>Fin del desafío</h2>
+        <div id="motivo-fin-desafio" style="margin-bottom: 18px; font-size: 1.1rem;"></div>
+        <div style="font-size: 1.3rem; margin-bottom: 18px;">
+            Aciertos: <b id="aciertos-desafio"></b>
+        </div>
+        <button class="continuar-btn" onclick="volverMenuD()">Volver al menú principal</button>
+    </div>
+</div>
+
+    
+
+    <!-- Pantalla de login/registro -->
+    <div id="pantalla-login" class="screen">
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="volverMenuD()">← Volver</button>
+        </div>
+        <div class="login-registro-wrapper">
+            <!-- Login -->
+            <div class="login-container">
+                <h2>Iniciar Sesión</h2>
+                <form id="login-form" autocomplete="off">
+                    <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                    <button type="submit" class="continuar-btnLO">Ingresar</button>
+                </form>
+                <div class="login-extra">
+                    ¿No tienes una cuenta?
+                    <a href="#" onclick="mostrarRegistro();return false;">Crea una</a>
+                </div>
+                <div id="login-error" class="error-msg"></div>
+            </div>
+            <!-- Registro -->
+            <div class="registro-container" style="display:none;">
+                <h2>Crear Cuenta</h2>
+                <form id="registro-form" autocomplete="off">
+                    <input type="text" id="reg-username" placeholder="Nombre de usuario" required maxlength="50">
+                    <input type="text" id="reg-nombre" placeholder="Nombre" required maxlength="100">
+                    <input type="text" id="reg-apellidos" placeholder="Apellidos" required maxlength="100">
+                    <input type="email" id="reg-email" placeholder="Correo electrónico" required maxlength="100">
+                    <input type="password" id="reg-password" placeholder="Contraseña" required>
+                    
+                    <div class="selector-pais" style="position: relative;">
+                        <input type="text" id="reg-nacionalidad" placeholder="Selecciona tu país" autocomplete="off" required>
+                        <div id="paises-lista" class="paises-lista"></div>
+                    </div>
+                    <button type="submit" class="continuar-btnRE">Crear cuenta</button>
+                </form>
+                <div class="login-extra">
+                    ¿Ya tienes cuenta?
+                    <a href="#" onclick="mostrarLogin();return false;">Inicia sesión</a>
+                </div>
+                <div id="registro-error" class="error-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mensaje-victoria" class="mensaje-victoria" style="display:none;">
+        <div class="victoria-contenido">
+            <h1>¡Felicidades!</h1>
+            <h2>¡Has conseguido todas las insignias y ganaste la partida!</h2>
+            <button class="continuar-btn" onclick="volverMenuW()">Volver al menú principal</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
