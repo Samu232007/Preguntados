@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 // Configuración de la base de datos
 $host = 'localhost';
-$username = 'root';
-$password = 'admin';
+$username = 'admin';
+$password = 'SamuMoraChaves23';
 $database = 'preguntados_db';
 
 $pdo = null;
