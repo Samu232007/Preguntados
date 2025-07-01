@@ -611,9 +611,27 @@ async function generarRuleta(modo) {
             label.className = 'ruleta-label';
 
             const ruletaSize = ruleta.offsetWidth || 300;
-            const angle = (i + 0.5) * anguloPorSector;
-            const radius = ruletaSize * 0.4;
-            const center = ruletaSize / 1.5;
+            
+            let angle;
+            if (window.innerWidth <= 600) {
+                angle = (i + 0.45) * anguloPorSector;
+            } else {
+                angle = (i + 0.35) * anguloPorSector;
+            }
+            
+            let radius;
+            if (window.innerWidth <= 600) {
+                radius = ruletaSize * 0.29;
+            } else {
+                radius = ruletaSize * 0.4;
+            }
+
+            let center;
+            if (window.innerWidth <= 600) {
+                center = ruletaSize / 2.3;
+            } else {
+                center = ruletaSize / 1.5;
+            }
             const rad = (angle - 90) * Math.PI / 180;
             const x = center + radius * Math.cos(rad);
             const y = center + radius * Math.sin(rad);
@@ -633,10 +651,9 @@ async function generarRuleta(modo) {
             const iconColor = darken(cat.color, 20);
 
             label.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-            label.innerHTML = `<span style="
-                font-size:2.8rem;
+            label.innerHTML = `<span class="ruleta-emoji" style="
                 color:${iconColor};
-                opacity: 0.85;
+                opacity:0.85;
                 filter: drop-shadow(0 2px 2px rgba(0,0,0,0.10));
                 display: block;
             ">${cat.icono}</span>`;

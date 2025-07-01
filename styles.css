@@ -312,10 +312,11 @@
 
 
         .ruleta-label span {
-            font-size: 12vw; /* Proporcional al ancho de la ventana */
+            font-size: 8vw;   /* Más pequeño en móviles */
+            max-inline-size: 2.2rem;
+            min-inline-size: 1.2rem;
             line-height: 1;
             display: block;
-            /* El color y sombra lo pone el JS inline */
         }
 
         .categoria-sector {
@@ -927,6 +928,15 @@
     transition: box-shadow 0.3s, background 0.3s, top 0.3s, left 0.3s, width 0.3s, height 0.3s;
 }
 
+@media (max-width: 600px) {
+    .racha-desafio-fuego {
+        top: 20%;
+        left: 10%;
+        
+    }
+    
+}
+
 
 
 .fuego-emoji {
@@ -1039,4 +1049,19 @@
 }
 .racha-fuego-supremo .fuego-emoji {
     filter: drop-shadow(0 0 26px #d0e1f7);
+}
+
+
+
+.ruleta-emoji {
+    font-size: 2.8rem;
+    line-height: 1;
+    text-align: center;
+    display: block;
+}
+
+@media (max-width: 600px) {
+    .ruleta-emoji {
+        font-size: 1.6rem;
+    }
 }
