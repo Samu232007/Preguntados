@@ -311,14 +311,6 @@
         }
 
 
-        .ruleta-label span {
-            font-size: 8vw;   /* Más pequeño en móviles */
-            max-inline-size: 2.2rem;
-            min-inline-size: 1.2rem;
-            line-height: 1;
-            display: block;
-        }
-
         .categoria-sector {
             position: absolute;
             width: 50%;
@@ -1054,7 +1046,7 @@
 
 
 .ruleta-emoji {
-    font-size: 2.2rem;
+    font-size: 3rem;
     line-height: 1;
     text-align: center;
     display: block;
@@ -1062,6 +1054,53 @@
 
 @media (max-width: 600px) {
     .ruleta-emoji {
-        font-size: 1.6rem;
+        font-size: 1.9rem;
     }
+}
+
+@media (max-width: 1047px) and (min-width: 601px) {
+    .ruleta-emoji {
+        font-size: 5vw;
+    }
+}
+
+
+
+
+.top-rachas-widget {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    background: rgba(255,255,255,0.97);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    padding: 18px 22px 12px 22px;
+    min-width: 220px;
+    z-index: 1000;
+    font-size: 1rem;
+}
+.top-rachas-widget h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    text-align: center;
+}
+.top-rachas-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 1rem;
+}
+.top-flag { font-size: 1.3rem; }
+.top-user { flex: 1; font-weight: bold; }
+.top-score { color: #ff9800; font-weight: bold; }
+@media (max-width: 600px) {
+    .top-rachas-widget {
+        right: 8px;
+        bottom: 8px;
+        min-width: 150px;
+        padding: 10px 8px 8px 8px;
+        font-size: 0.95rem;
+    }
+    .top-flag { font-size: 1.1rem; }
 }

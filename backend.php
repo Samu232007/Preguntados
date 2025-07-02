@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Configuración de la base de datos
-$host = 'preguntados-db.cwpm8282m1nc.us-east-1.rds.amazonaws.com';
-$username = 'admin';
-$password = 'SamuMoraChaves23';
+$host = 'localhost';
+$username = 'root';
+$password = 'admin';
 $database = 'preguntados_db';
 
 $pdo = null;
@@ -39,10 +39,72 @@ switch($endpoint) {
     case 'pregunta':
         getPregunta();
         break;
+    case 'top-rachas':
+        getTopRachas();
+        break;   
+    case 'guardar-racha':
+        guardarRacha();
+        break;     
     default:
         http_response_code(404);
         echo json_encode(['error' => 'Endpoint no encontrado']);
 }
+
+function getTopRachas() {
+    global $pdo;
+    if ($pdo === null) {
+        echo json_encode([]);
+        return;
+    }
+    try {
+        $stmt = $pdo->query("
+            SELECT u.nacionalidad, u.username, m.racha
+            FROM mejores_rachas m
+            JOIN usuarios u ON m.usuario_id = u.id
+            ORDER BY m.racha DESC, m.fecha ASC
+            LIMIT 5
+        ");
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($result);
+    } catch(Exception $e) {
+        http_response_code(500);
+        echo json_encode([]);
+    }
+}
+
+function guardarRacha() {
+    global $pdo;
+    $input = json_decode(file_get_contents('php://input'), true);
+    $usuario_id = $input['usuario_id'] ?? null;
+    $racha = $input['racha'] ?? null;
+    if ($pdo === null) {
+        echo json_encode(['success' => false, 'message' => 'No se pudo conectar a la base de datos']);
+        return;
+    }
+    if (!$usuario_id || !$racha) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Datos incompletos']);
+        return;
+    }
+    try {
+        // Si ya existe, solo actualiza si la nueva racha es mayor
+        $stmt = $pdo->prepare("SELECT racha FROM mejores_rachas WHERE usuario_id = ?");
+        $stmt->execute([$usuario_id]);
+        $actual = $stmt->fetchColumn();
+        if ($actual === false) {
+            $stmt = $pdo->prepare("INSERT INTO mejores_rachas (usuario_id, racha) VALUES (?, ?)");
+            $stmt->execute([$usuario_id, $racha]);
+        } else if ($racha > $actual) {
+            $stmt = $pdo->prepare("UPDATE mejores_rachas SET racha = ?, fecha = NOW() WHERE usuario_id = ?");
+            $stmt->execute([$racha, $usuario_id]);
+        }
+        echo json_encode(['success' => true]);
+    } catch(Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Error guardando racha']);
+    }
+}
+
 
 function testConnection() {
     global $pdo;

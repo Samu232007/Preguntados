@@ -612,18 +612,13 @@ async function generarRuleta(modo) {
 
             const ruletaSize = ruleta.offsetWidth || 300;
             
-            let angle;
-            if (window.innerWidth <= 600) {
-                angle = (i + 0.45) * anguloPorSector;
-            } else {
-                angle = (i + 0.35) * anguloPorSector;
-            }
+            const angle = (i + 0.50) * anguloPorSector;
             
             let radius;
             if (window.innerWidth <= 600) {
                 radius = ruletaSize * 0.29;
             } else {
-                radius = ruletaSize * 0.4;
+                radius = ruletaSize * 0.45;
             }
 
             let center;
@@ -1217,6 +1212,17 @@ function responderDesafio(opcionSeleccionada) {
             hacerPreguntaDesafio(); // Siguiente pregunta
         } else {
             perderDesafio('Respuesta incorrecta.');
+            // Guardar la racha si el usuario está logueado
+    if (userData && userData.id && juegoActual.aciertosDesafio > 0) {
+        fetch('backend.php?endpoint=guardar-racha', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                usuario_id: userData.id,
+                racha: juegoActual.aciertosDesafio
+            })
+        }).then(() => mostrarTopRachas());
+    }
         }
     }, 1000);
 }
@@ -1227,8 +1233,7 @@ function perderDesafio(motivo) {
     document.getElementById('motivo-fin-desafio').textContent = motivo;
     document.getElementById('aciertos-desafio').textContent = juegoActual.aciertosDesafio || 0;
    
-    // Limpia progreso al volver al menú desde el botón
-    // (el botón ya llama a volverMenu, que limpia el estado)
+    
 }
 
 function cambiarPantalla(nuevaPantalla) {
@@ -1429,6 +1434,27 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+async function mostrarTopRachas() {
+    try {
+        const res = await fetch('backend.php?endpoint=top-rachas');
+        const top = await res.json();
+        const cont = document.getElementById('top-rachas');
+        if (!cont) return;
+        cont.innerHTML = '<h4>🏆 Mejores Rachas</h4>' +
+            top.map(r => `
+                <div class="top-rachas-item">
+                    <span class="top-flag">${r.nacionalidad || '🌎'}</span>
+                    <span class="top-user">${r.username}</span>
+                    <span class="top-score">${r.racha}</span>
+                </div>
+            `).join('');
+    } catch (e) {
+        // Si hay error, no mostrar nada
+    }
+}
+document.addEventListener('DOMContentLoaded', mostrarTopRachas);
+
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', async function() {
