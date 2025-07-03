@@ -19,6 +19,7 @@ if ($action === 'login') {
         echo json_encode([
             'success' => true,
             'userData' => [
+                'id' => $user['id'],
                 'username' => $user['username'],
                 'nombre' => $user['nombre'],
                 'apellidos' => $user['apellidos'],

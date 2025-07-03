@@ -1213,6 +1213,14 @@ function responderDesafio(opcionSeleccionada) {
         } else {
             perderDesafio('Respuesta incorrecta.');
             // Guardar la racha si el usuario está logueado
+        }
+    }, 1000);
+}
+
+function perderDesafio(motivo) {
+    cambiarPantalla('pantalla-estadisticas-desafio');
+    console.log('userData:', userData, 'racha:', juegoActual.aciertosDesafio);
+        // Solo guardar si el usuario está logueado y hay racha
     if (userData && userData.id && juegoActual.aciertosDesafio > 0) {
         fetch('backend.php?endpoint=guardar-racha', {
             method: 'POST',
@@ -1221,14 +1229,23 @@ function responderDesafio(opcionSeleccionada) {
                 usuario_id: userData.id,
                 racha: juegoActual.aciertosDesafio
             })
-        }).then(() => mostrarTopRachas());
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                console.error('Error guardando racha:', data);
+                mostrarError('No se pudo guardar la racha');
+            }
+            mostrarTopRachas();
+        })
+        .catch(err => {
+            console.error('Error en fetch guardar-racha:', err);
+            mostrarError('No se pudo guardar la racha');
+        });
+    } else {
+        console.log('no funciona el if');
     }
-        }
-    }, 1000);
-}
-
-function perderDesafio(motivo) {
-    cambiarPantalla('pantalla-estadisticas-desafio');
+ 
     // Actualiza los datos en la pantalla de estadísticas
     document.getElementById('motivo-fin-desafio').textContent = motivo;
     document.getElementById('aciertos-desafio').textContent = juegoActual.aciertosDesafio || 0;
@@ -1444,7 +1461,7 @@ async function mostrarTopRachas() {
         cont.innerHTML = '<h4>🏆 Mejores Rachas</h4>' +
             top.map(r => `
                 <div class="top-rachas-item">
-                    <span class="top-flag">${r.nacionalidad || '🌎'}</span>
+                    <span class="top-flag">${r.nacionalidad}</span>
                     <span class="top-user">${r.username}</span>
                     <span class="top-score">${r.racha}</span>
                 </div>

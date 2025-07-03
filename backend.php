@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Configuración de la base de datos
-$host = 'preguntados-db.cwpm8282m1nc.us-east-1.rds.amazonaws.com';
-$username = 'admin';
-$password = 'SamuMoraChaves23';
+$host = 'localhost';
+$username = 'root';
+$password = 'admin';
 $database = 'preguntados_db';
 
 $pdo = null;
@@ -87,16 +87,27 @@ function guardarRacha() {
         return;
     }
     try {
-        // Si ya existe, solo actualiza si la nueva racha es mayor
-        $stmt = $pdo->prepare("SELECT racha FROM mejores_rachas WHERE usuario_id = ?");
+        // 1. Obtener las rachas actuales del usuario (ordenadas de menor a mayor)
+        $stmt = $pdo->prepare("SELECT id, racha FROM mejores_rachas WHERE usuario_id = ? ORDER BY racha ASC, fecha ASC");
         $stmt->execute([$usuario_id]);
-        $actual = $stmt->fetchColumn();
-        if ($actual === false) {
+        $rachas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($rachas) < 5) {
+            // Si tiene menos de 5, simplemente insertar la nueva racha
             $stmt = $pdo->prepare("INSERT INTO mejores_rachas (usuario_id, racha) VALUES (?, ?)");
             $stmt->execute([$usuario_id, $racha]);
-        } else if ($racha > $actual) {
-            $stmt = $pdo->prepare("UPDATE mejores_rachas SET racha = ?, fecha = NOW() WHERE usuario_id = ?");
-            $stmt->execute([$racha, $usuario_id]);
+        } else {
+            // Si ya tiene 5, ver si la nueva racha es mayor que la menor
+            $menor = $rachas[0];
+            if ($racha > $menor['racha']) {
+                // Eliminar la menor
+                $stmt = $pdo->prepare("DELETE FROM mejores_rachas WHERE id = ?");
+                $stmt->execute([$menor['id']]);
+                // Insertar la nueva racha
+                $stmt = $pdo->prepare("INSERT INTO mejores_rachas (usuario_id, racha) VALUES (?, ?)");
+                $stmt->execute([$usuario_id, $racha]);
+            }
+            // Si la nueva racha no es mayor, no se guarda nada
         }
         echo json_encode(['success' => true]);
     } catch(Exception $e) {
