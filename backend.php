@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Configuración de la base de datos
-$host = 'preguntados-db.cwpm8282m1nc.us-east-1.rds.amazonaws.com';
-$username = 'admin';
-$password = 'SamuMoraChaves23';
+$host = 'localhost';
+$username = 'root';
+$password = 'admin';
 $database = 'preguntados_db';
 
 $pdo = null;
@@ -65,7 +65,7 @@ function getTopRachas() {
             LIMIT 5
         ");
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($result);
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
     } catch(Exception $e) {
         http_response_code(500);
         echo json_encode([]);

@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await res.json();
             if (data.success) {
                 mostrarLogin();
-                document.getElementById('login-error').textContent = '¡Cuenta creada! Ahora inicia sesión.';
+                document.getElementById('login-done').textContent = '¡Cuenta creada! Ahora inicia sesión.';
             } else {
                 document.getElementById('registro-error').textContent = data.error || 'Error al crear cuenta';
             }
@@ -1458,10 +1458,10 @@ async function mostrarTopRachas() {
         const top = await res.json();
         const cont = document.getElementById('top-rachas');
         if (!cont) return;
-        cont.innerHTML = '<h4>🏆 Mejores Rachas</h4>' +
-            top.map(r => `
+        cont.innerHTML = '<h3>🏆 Mejores Rachas</h3>' +
+            top.map((r ,i )=> `
                 <div class="top-rachas-item">
-                    <span class="top-flag">${r.nacionalidad}</span>
+                    <span class="top-position">${i + 1}.</span>
                     <span class="top-user">${r.username}</span>
                     <span class="top-score">${r.racha}</span>
                 </div>
@@ -1469,6 +1469,7 @@ async function mostrarTopRachas() {
     } catch (e) {
         // Si hay error, no mostrar nada
     }
+    console.log('Ranking recibido:', top);
 }
 document.addEventListener('DOMContentLoaded', mostrarTopRachas);
 
@@ -1489,5 +1490,33 @@ document.addEventListener('DOMContentLoaded', async function() {
     } catch (error) {
         console.error('Error verificando conexión:', error);
         mostrarError('Error de conexión. Usando modo offline.');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('login-password');
+    const toggle = document.getElementById('toggle-password');
+    if (passwordInput && toggle) {
+        toggle.addEventListener('click', function() {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggle.innerHTML = isPassword
+    ? '<img src="https://i.postimg.cc/nzF8qkJL/8395688.png" style="height: 2.6vh; margin-top: 20%;">'
+    : '<img src="https://i.postimg.cc/P5Y0ccfx/8442580.png" style="height: 2.6vh; margin-top: 20%;">';
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const regPasswordInput = document.getElementById('reg-password');
+    const regToggle = document.getElementById('toggle-reg-password');
+    if (regPasswordInput && regToggle) {
+        regToggle.addEventListener('click', function() {
+            const isPassword = regPasswordInput.type === 'password';
+            regPasswordInput.type = isPassword ? 'text' : 'password';
+            regToggle.innerHTML = isPassword
+                ? '<img src="https://i.postimg.cc/nzF8qkJL/8395688.png" style="height: 2.6vh; margin-top: 20%;">'
+                : '<img src="https://i.postimg.cc/P5Y0ccfx/8442580.png" style="height: 2.6vh; margin-top: 20%;">';
+        });
     }
 });

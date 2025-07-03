@@ -1,8 +1,8 @@
 <?php
-$host = 'preguntados-db.cwpm8282m1nc.us-east-1.rds.amazonaws.com';
+$host = 'localhost';
 $db   = 'preguntados_db';
-$user = 'admin';
-$pass = 'SamuMoraChaves23';
+$user = 'root';
+$pass = 'admin';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
