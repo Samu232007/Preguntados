@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Configuración de la base de datos
-$host = 'preguntados-db.cwpm8282m1nc.us-east-1.rds.amazonaws.com';
-$username = 'admin';
-$password = 'SamuMoraChaves23';
+$host = 'localhost';
+$username = 'Preguntados';
+$password = '$amuMoraChaves23';
 $database = 'preguntados_db';
 
 $pdo = null;
@@ -304,3 +304,4 @@ function getPregunta() {
 
 
 ?>
+
